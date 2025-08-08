@@ -1,5 +1,15 @@
-import { Clock, Mail, MapPin, Phone, Send, Users } from "lucide-react";
+import {
+  Clock,
+  Mail,
+  MapPin,
+  Phone,
+  Send,
+  Users,
+  Star,
+  Heart,
+} from "lucide-react";
 import React, { useState } from "react";
+import GetInTouch from "./GetInTouch";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -22,7 +32,6 @@ export default function ContactForm() {
       return;
     }
 
-    // Optional: redirect to WhatsApp with prefilled message
     const whatsappNumber = "9851068219";
     const whatsappURL = `https://wa.me/977${whatsappNumber}?text=Hello%20Hotel%20Sherpa%20Soul!%0AName:%20${encodeURIComponent(
       formData.name
@@ -38,120 +47,72 @@ export default function ContactForm() {
     }, 2000);
   };
 
-  const contactInfo = [
-    {
-      icon: Phone,
-      title: "Call or WhatsApp",
-      detail: "+977-9851068219",
-      description: "Direct message us on WhatsApp anytime",
-      gradient: "from-green-400 to-blue-500",
-    },
-    {
-      icon: Mail,
-      title: "Email Us",
-      detail: "mingmasaino@gmail.com",
-      description: "We usually respond within 24 hours",
-      gradient: "from-purple-400 to-pink-500",
-    },
-    {
-      icon: MapPin,
-      title: "Visit Us",
-      detail: "Thamel, Kathmandu, Nepal",
-      description: "Heart of Kathmandu's tourist district",
-      gradient: "from-orange-400 to-red-500",
-    },
-  ];
   return (
     <div>
-      <section className="py-20 px-6 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-pink-500 mb-4">
-              Get In{" "}
-              <span className="bg-gradient-to-r from-pink-500 to-pink-500 bg-clip-text text-transparent">
-                Touch
-              </span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Ready to experience authentic Sherpa hospitality? Reach out to us
-              for bookings, questions, or suggestions.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 mb-20">
-            {contactInfo.map((info, index) => (
-              <div
-                key={index}
-                className="group relative bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-2 transition-all duration-500 cursor-pointer overflow-hidden"
-              >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-r ${info.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
-                ></div>
-                <div className="relative z-10">
-                  <div
-                    className={`w-16 h-16 bg-gradient-to-r ${info.gradient} rounded-2xl flex items-center justify-center mb-6 shadow-xl group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <info.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                    {info.title}
-                  </h3>
-                  <p className="text-lg font-semibold text-gray-700 mb-2">
-                    {info.detail}
-                  </p>
-                  <p className="text-gray-500">{info.description}</p>
-                </div>
-                <div
-                  className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${info.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-                ></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Contact Info Section */}
+      <GetInTouch />
+      {/* Contact Form Section with Background Image */}
+      <section
+        className="py-24 px-6 relative overflow-hidden min-h-screen flex items-center"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+        }}
+      >
+        {/* Light overlay */}
+        <div className="absolute inset-0 bg-wh/80 backdrop-blur-sm"></div>
 
-      {/* Contact Form Section */}
-      <section className="py-20 px-6 bg-gradient-to-br from-gray-900 to-black relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-full filter blur-3xl"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-full filter blur-3xl"></div>
-        </div>
+        {/* Floating shapes */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-orange-400/10 to-pink-400/10 rounded-full filter blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-purple-400/10 to-blue-400/10 rounded-full filter blur-3xl animate-pulse delay-1000"></div>
 
         <div className="max-w-6xl mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-start">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Message */}
             <div className="text-white">
-              <div className="mb-8">
-                <div className="inline-block px-4 py-2 bg-gradient-to-r from-pink-500 to-pink-500 text-white text-sm font-semibold rounded-full mb-4">
-                  Send us a message
-                </div>
-                <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <div className="mb-10">
+                <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                   Let's Start a{" "}
-                  <span className="bg-gradient-to-r from-pink-500 to-pink-500 bg-clip-text text-transparent">
+                  <span className="bg-[#AB865] bg-clip-text tex-transparent">
                     Conversation
                   </span>
                 </h2>
-                <p className="text-xl text-gray-300 leading-relaxed mb-8">
+                <p className="text-xl text-white leading-relaxed mb-10">
                   Whether you're planning your visit, need assistance, or want
                   to share feedback, we're here to help make your experience at
                   Hotel Sherpa Soul unforgettable.
                 </p>
               </div>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-                  <div className="flex items-center mb-3">
-                    <Clock className="w-8 h-8 text-pink-500 mr-3" />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/40 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300">
+                      <Clock className="w-6 h-6 text-white" />
+                    </div>
                     <div>
-                      <h4 className="font-bold text-white">Quick Response</h4>
-                      <p className="text text-sm">Within 24 hours</p>
+                      <h4 className="font-bold text-slate-800">
+                        Quick Response
+                      </h4>
+                      <p className="text-slate-600 text-sm">Within 24 hours</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-                  <div className="flex items-center mb-3">
-                    <Users className="w-8 h-8 text-pink-400 mr-3" />
+
+                <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/40 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-300">
+                      <Users className="w-6 h-6 text-white" />
+                    </div>
                     <div>
-                      <h4 className="font-bold text-white">Personal Touch</h4>
-                      <p className="text-gray-400 text-sm">Dedicated support</p>
+                      <h4 className="font-bold text-slate-800">
+                        Personal Touch
+                      </h4>
+                      <p className="text-slate-600 text-sm">
+                        Dedicated support
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -160,19 +121,23 @@ export default function ContactForm() {
 
             {/* Form Section */}
             <div className="relative">
-              <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-                <div className="bg-gradient-to-r from-orange-500 to-pink-500 p-6">
-                  <h3 className="text-2xl font-bold text-white flex items-center">
-                    <Send className="w-6 h-6 mr-3" />
-                    Send Message
-                  </h3>
-                  <p className="text-orange-100 mt-2">
-                    Fill out the form below and we'll get back to you soon!
-                  </p>
+              <div className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-white/40 overflow-hidden">
+                <div className="bg-[#AB8865] p-8 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="relative z-10">
+                    <h3 className="text-2xl font-bold text-white flex items-center">
+                      <Send className="w-7 h-7 mr-3" />
+                      Send Message
+                    </h3>
+                    <p className="text-white/90 mt-3 text-lg">
+                      Fill out the form below and we'll get back to you soon!
+                    </p>
+                  </div>
                 </div>
+
                 <div className="p-8 space-y-6">
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                  <div className="group">
+                    <label className="block text-sm font-bold text-slate-700 mb-3 transition-colors group-focus-within:text-[#AB8865]">
                       Full Name *
                     </label>
                     <input
@@ -180,13 +145,14 @@ export default function ContactForm() {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="w-full border-2 border-gray-200 rounded-xl p-4 bg-gray-50/50 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20"
+                      className="w-full border-2 border-slate-200 rounded-xl p-4 bg-slate-50/50 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#AB8865] focus:bg-white transition-all duration-300"
                       placeholder="Enter your full name"
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
+
+                  <div className="group">
+                    <label className="block text-sm font-bold text-slate-700 mb-3 transition-colors group-focus-within:text-[#AB8865]">
                       Email Address *
                     </label>
                     <input
@@ -194,13 +160,14 @@ export default function ContactForm() {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full border-2 border-gray-200 rounded-xl p-4 bg-gray-50/50 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20"
+                      className="w-full border-2 border-slate-200 rounded-xl p-4 bg-slate-50/50 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#AB8865] focus:bg-white transition-all duration-300"
                       placeholder="your@email.com"
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
+
+                  <div className="group">
+                    <label className="block text-sm font-bold text-slate-700 mb-3 transition-colors group-focus-within:text-[#AB8865]">
                       Your Message *
                     </label>
                     <textarea
@@ -208,23 +175,33 @@ export default function ContactForm() {
                       value={formData.message}
                       onChange={handleInputChange}
                       rows="5"
-                      className="w-full border-2 border-gray-200 rounded-xl p-4 bg-gray-50/50 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 resize-none"
+                      className="w-full border-2 border-slate-200 rounded-xl p-4 bg-slate-50/50 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#AB8865] focus:bg-white resize-none transition-all duration-300"
                       placeholder="Tell us about your inquiry or request..."
                       required
                     />
                   </div>
+
                   <button
                     type="button"
                     onClick={handleSubmit}
                     disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white py-4 px-8 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-70"
+                    className="group w-full bg-[#AB8865] text-white py-4 px-8 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed relative overflow-hidden"
                   >
-                    {isSubmitting ? "Sending..." : "Send via WhatsApp"}
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+                          Send via WhatsApp
+                        </>
+                      )}
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </button>
-                  <p className="text-sm text-gray-500 text-center mt-4">
-                    By sending this message, you agree to our privacy policy and
-                    terms of service.
-                  </p>
                 </div>
               </div>
             </div>

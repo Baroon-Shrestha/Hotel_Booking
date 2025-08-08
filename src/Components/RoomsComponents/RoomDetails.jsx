@@ -1,12 +1,27 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { rooms } from "../HelperComponents/RoomsData";
+import {
+  ChevronLeft,
+  MapPin,
+  Users,
+  Bed,
+  Calendar,
+  Star,
+  Wifi,
+  Car,
+  Coffee,
+  Utensils,
+} from "lucide-react";
 
 export default function RoomDetail() {
   const { id } = useParams();
   const roomId = Number(id);
   const room = rooms.find((r) => r.id === roomId);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState("overview");
+  const [selectedServices, setSelectedServices] = useState([]);
+  const navigate = useNavigate();
 
   if (!room)
     return (
@@ -21,8 +36,6 @@ export default function RoomDetail() {
         </div>
       </div>
     );
-
-  console.log(room.name);
 
   // Handle both single image and array of images
   const images = Array.isArray(room.image) ? room.image : [room.image];
@@ -39,6 +52,27 @@ export default function RoomDetail() {
     setCurrentImageIndex(index);
   };
 
+  const toggleService = (serviceId) => {
+    setSelectedServices((prev) =>
+      prev.includes(serviceId)
+        ? prev.filter((id) => id !== serviceId)
+        : [...prev, serviceId]
+    );
+  };
+
+  const getAmenityIcon = (amenity) => {
+    const amenityLower = amenity.toLowerCase();
+    if (amenityLower.includes("wifi") || amenityLower.includes("internet"))
+      return <Wifi className="w-4 h-4" />;
+    if (amenityLower.includes("parking") || amenityLower.includes("car"))
+      return <Car className="w-4 h-4" />;
+    if (amenityLower.includes("coffee") || amenityLower.includes("tea"))
+      return <Coffee className="w-4 h-4" />;
+    if (amenityLower.includes("dining") || amenityLower.includes("restaurant"))
+      return <Utensils className="w-4 h-4" />;
+    return <Star className="w-4 h-4" />;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Enhanced Hero Section with Carousel */}
@@ -50,12 +84,18 @@ export default function RoomDetail() {
             className="w-full h-full object-cover transition-opacity duration-500"
           />
 
-          <div className="absolute top-0">
-            <button>Back</button>
+          <div className="z-50 absolute top-8 left-6">
+            <button
+              className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-6 py-2 rounded-2xl hover:bg-white transition-all duration-200 shadow-lg"
+              onClick={() => navigate(-1)}
+            >
+              <ChevronLeft className="w-5 h-5" />
+              <span className="font-bold">Back</span>
+            </button>
           </div>
 
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
 
           {/* Navigation Arrows (only show if multiple images) */}
           {images.length > 1 && (
@@ -121,39 +161,18 @@ export default function RoomDetail() {
 
           {/* Room Title Overlay */}
           <div className="absolute bottom-8 left-8 text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2">{room.name}</h1>
-            <div className="flex gap-4 text-lg opacity-90">
-              <span className="flex items-center gap-1">
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8A2 2 0 0116 6V4a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                </svg>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{room.name}</h1>
+            <div className="flex flex-wrap gap-6 text-lg opacity-90">
+              <span className="flex items-center gap-2">
+                <Users className="w-5 h-5" />
                 {room.guests} Guests
               </span>
-              <span className="flex items-center gap-1">
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                  />
-                </svg>
+              <span className="flex items-center gap-2">
+                <MapPin className="w-5 h-5" />
                 {room.size} sq ft
               </span>
-              <span className="flex items-center gap-1">
-                <svg
-                  className="w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                </svg>
+              <span className="flex items-center gap-2">
+                <Bed className="w-5 h-5" />
                 {room.beds}
               </span>
             </div>
@@ -164,238 +183,437 @@ export default function RoomDetail() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Room Details - Takes 2/3 of the space */}
+          {/* Enhanced Room Details - Takes 2/3 of the space */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Description Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                About This Room
-              </h2>
-              <p className="text-gray-600 leading-relaxed text-lg">
-                {room.description}
-              </p>
-            </div>
-
-            {/* Amenities Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                Room Amenities
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {room.amenities.map((amenity, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+            {/* Interactive Tab Navigation */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="flex border-b border-gray-200">
+                {[
+                  {
+                    id: "overview",
+                    label: "Overview",
+                    icon: <Star className="w-4 h-4" />,
+                  },
+                  {
+                    id: "amenities",
+                    label: "Amenities",
+                    icon: <Wifi className="w-4 h-4" />,
+                  },
+                  {
+                    id: "features",
+                    label: "Features",
+                    icon: <Calendar className="w-4 h-4" />,
+                  },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-2 px-6 py-4 font-medium transition-all duration-200 ${
+                      activeTab === tab.id
+                        ? "bg-amber-50 text-amber-600 border-b-2 border-amber-500"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    }`}
                   >
-                    <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg
-                        className="w-4 h-4 text-amber-600"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        />
-                      </svg>
-                    </div>
-                    <span className="text-gray-700 font-medium">{amenity}</span>
-                  </div>
+                    {tab.icon}
+                    {tab.label}
+                  </button>
                 ))}
               </div>
-            </div>
 
-            {/* Features Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                Special Features
-              </h3>
-              {room.features && room.features.length > 0 ? (
-                <div className="space-y-3">
-                  {room.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-3">
-                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="p-8">
+                {/* Overview Tab */}
+                {activeTab === "overview" && (
+                  <div className="space-y-6">
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                        About This Room
+                      </h2>
+                      <p className="text-gray-600 leading-relaxed text-lg">
+                        {room.description}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg text-center">
+                        <Users className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                        <div className="font-semibold text-gray-900">
+                          {room.guests}
+                        </div>
+                        <div className="text-sm text-gray-600">Max Guests</div>
+                      </div>
+                      <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg text-center">
+                        <MapPin className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                        <div className="font-semibold text-gray-900">
+                          {room.size}
+                        </div>
+                        <div className="text-sm text-gray-600">Square Feet</div>
+                      </div>
+                      <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg text-center">
+                        <Bed className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+                        <div className="font-semibold text-gray-900">
+                          {room.beds}
+                        </div>
+                        <div className="text-sm text-gray-600">Bed Type</div>
+                      </div>
+                      <div className="bg-gradient-to-br from-amber-50 to-amber-100 p-4 rounded-lg text-center">
+                        <Star className="w-8 h-8 text-amber-600 mx-auto mb-2" />
+                        <div className="font-semibold text-gray-900">
+                          Rs. {room.price}
+                        </div>
+                        <div className="text-sm text-gray-600">Per Night</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Amenities Tab */}
+                {activeTab === "amenities" && (
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                      Room Amenities
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {room.amenities.map((amenity, idx) => (
+                        <div
+                          key={idx}
+                          className="group flex items-center gap-4 p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:from-amber-50 hover:to-amber-100 transition-all duration-300 cursor-pointer transform hover:scale-105"
+                        >
+                          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm group-hover:shadow-md transition-all duration-300">
+                            <div className="text-amber-600 group-hover:text-amber-700">
+                              {getAmenityIcon(amenity)}
+                            </div>
+                          </div>
+                          <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors duration-300">
+                            {amenity}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Features Tab */}
+                {activeTab === "features" && (
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                      Special Features
+                    </h3>
+                    {room.features && room.features.length > 0 ? (
+                      <div className="space-y-4">
+                        {room.features.map((feature, idx) => (
+                          <div
+                            key={idx}
+                            className="group flex items-start gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-all duration-300"
+                          >
+                            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-blue-600 transition-colors duration-300">
+                              <svg
+                                className="w-4 h-4 text-white"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                />
+                              </svg>
+                            </div>
+                            <span className="text-gray-700 group-hover:text-gray-900 font-medium transition-colors duration-300">
+                              {feature}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Calendar className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <p className="text-gray-500 italic text-lg">
+                          No special features listed for this room.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 px-8 py-6 border-b border-gray-200">
+                <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                  <Calendar className="w-6 h-6 text-amber-600" />
+                  Check In & Check Out Times
+                </h3>
+              </div>
+
+              <div className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Check-In Card */}
+                  <div className="group bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl hover:from-green-100 hover:to-emerald-100 transition-all duration-300 border border-green-100">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center group-hover:bg-green-600 transition-colors duration-300">
                         <svg
-                          className="w-3 h-3 text-blue-600"
+                          className="w-6 h-6 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-bold text-gray-900 group-hover:text-green-800 transition-colors duration-300">
+                          Check-In Time
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          Welcome to your stay
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
+                        <svg
+                          className="w-4 h-4 text-green-600"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
                           <path
                             fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z"
+                            clipRule="evenodd"
                           />
                         </svg>
                       </div>
-                      <span className="text-gray-700">{feature}</span>
+                      <span className="text-2xl font-bold text-green-700">
+                        12:00 PM
+                      </span>
                     </div>
-                  ))}
+
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Early check-in may be available upon request and subject
+                      to availability.
+                    </p>
+                  </div>
+
+                  {/* Check-Out Card */}
+                  <div className="group bg-gradient-to-br from-red-50 to-rose-50 p-6 rounded-xl hover:from-red-100 hover:to-rose-100 transition-all duration-300 border border-red-100">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center group-hover:bg-red-600 transition-colors duration-300">
+                        <svg
+                          className="w-6 h-6 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-bold text-gray-900 group-hover:text-red-800 transition-colors duration-300">
+                          Check-Out Time
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          Safe travels ahead
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
+                        <svg
+                          className="w-4 h-4 text-red-600"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <span className="text-2xl font-bold text-red-700">
+                        12:00 PM
+                      </span>
+                    </div>
+
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Late check-out may be available for an additional fee,
+                      subject to availability.
+                    </p>
+                  </div>
                 </div>
-              ) : (
-                <div className="text-center py-8">
-                  <svg
-                    className="w-12 h-12 text-gray-300 mx-auto mb-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                    />
-                  </svg>
-                  <p className="text-gray-500 italic">
-                    No special features listed for this room.
-                  </p>
+
+                {/* Additional Information */}
+                <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg
+                        className="w-5 h-5 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold text-gray-900 mb-2">
+                        Important Information
+                      </h5>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li>• Valid photo ID required at check-in</li>
+
+                        <li>
+                          • Please contact reception for early check-in or late
+                          check-out requests
+                        </li>
+                        <li>
+                          • Luggage storage available before check-in and after
+                          check-out
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
           </div>
 
-          {/* Booking Form - Sticky sidebar */}
+          {/* Enhanced Booking Form with Background Image - Sticky sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-8">
-              <div className="bg-gradient-to-br from-gray-900 to-black text-white rounded-2xl p-8 shadow-2xl">
-                <div className="mb-8">
-                  <h3 className="text-2xl font-bold mb-2">Reserve Your Stay</h3>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-bold text-amber-400">
-                      Rs. {room.price}
-                    </span>
-                    <span className="text-gray-300">/ night</span>
-                  </div>
-                </div>
+              <div
+                className="relative rounded-2xl p-8 shadow-2xl overflow-hidden"
+                style={{
+                  backgroundImage:
+                    'linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6)), url("https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80")',
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                {/* Overlay for better text readability */}
+                <div className="absolute inset-0 bg-gradient-to-br from-black/70 to-black/50"></div>
 
-                {/* Date Selection */}
-                <div className="space-y-4 mb-6">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-sm font-medium mb-2 text-gray-200">
-                        Check In
-                      </label>
-                      <input
-                        type="date"
-                        className="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2 text-gray-200">
-                        Check Out
-                      </label>
-                      <input
-                        type="date"
-                        className="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white"
-                      />
+                {/* Content */}
+                <div className="relative z-10 text-white">
+                  <div className="mb-8">
+                    <h3 className="text-2xl font-bold mb-2">
+                      Reserve Your Stay
+                    </h3>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-bold text-amber-400">
+                        Rs. {room.price}
+                      </span>
+                      <span className="text-gray-300">/ night</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Guest & Room Details */}
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-200">
-                      Adults
-                    </label>
-                    <input
-                      type="number"
-                      defaultValue={1}
-                      min="1"
-                      className="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-200">
-                      Children
-                    </label>
-                    <input
-                      type="number"
-                      defaultValue={0}
-                      min="0"
-                      className="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-200">
-                      Rooms
-                    </label>
-                    <input
-                      type="number"
-                      defaultValue={1}
-                      min="1"
-                      className="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-200">
-                      Extra Beds
-                    </label>
-                    <input
-                      type="number"
-                      defaultValue={0}
-                      min="0"
-                      className="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white"
-                    />
-                  </div>
-                </div>
-
-                {/* Extra Services */}
-                <div className="mb-8">
-                  <h4 className="text-lg font-semibold mb-4 text-gray-200">
-                    Extra Services
-                  </h4>
-                  <div className="space-y-3">
-                    {[
-                      {
-                        id: "pet",
-                        label: "Pet-friendly Amenities",
-                        price: "$10",
-                      },
-                      { id: "spa", label: "Spa Services", price: "$20" },
-                      { id: "laundry", label: "Laundry Service", price: "$30" },
-                    ].map((service) => (
-                      <div
-                        key={service.id}
-                        className="flex items-center justify-between p-3 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors duration-200"
-                      >
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="checkbox"
-                            id={service.id}
-                            className="w-4 h-4 text-amber-400 bg-gray-700 border-gray-600 rounded focus:ring-amber-400 focus:ring-2"
-                          />
-                          <label
-                            htmlFor={service.id}
-                            className="text-gray-200 cursor-pointer"
-                          >
-                            {service.label}
-                          </label>
-                        </div>
-                        <span className="text-amber-400 font-medium">
-                          {service.price}
-                        </span>
+                  {/* Date Selection */}
+                  <div className="space-y-4 mb-6">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-medium mb-2 text-gray-200">
+                          Check In
+                        </label>
+                        <input
+                          type="date"
+                          className="w-full p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white placeholder-white/60"
+                        />
                       </div>
-                    ))}
+                      <div>
+                        <label className="block text-sm font-medium mb-2 text-gray-200">
+                          Check Out
+                        </label>
+                        <input
+                          type="date"
+                          className="w-full p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white placeholder-white/60"
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Total & Book */}
-                <div className="border-t border-gray-700 pt-6 mb-6">
-                  <div className="flex justify-between items-center text-xl">
-                    <span className="font-medium text-gray-200">
-                      Total Cost
-                    </span>
-                    <span className="font-bold text-amber-400">$129</span>
+                  {/* Guest & Room Details */}
+                  <div className="grid grid-cols-2 gap-3 mb-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-gray-200">
+                        Adults
+                      </label>
+                      <input
+                        type="number"
+                        defaultValue={1}
+                        min="1"
+                        className="w-full p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-gray-200">
+                        Children
+                      </label>
+                      <input
+                        type="number"
+                        defaultValue={0}
+                        min="0"
+                        className="w-full p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-gray-200">
+                        Rooms
+                      </label>
+                      <input
+                        type="number"
+                        defaultValue={1}
+                        min="1"
+                        className="w-full p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-gray-200">
+                        Extra Beds
+                      </label>
+                      <input
+                        type="number"
+                        defaultValue={0}
+                        min="0"
+                        className="w-full p-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-200 text-white"
+                      />
+                    </div>
                   </div>
+
+                  {/* Total & Book */}
+                  <div className="border-t border-white/20 pt-6 mb-6">
+                    <div className="flex justify-between items-center text-xl">
+                      <span className="font-medium text-gray-200">
+                        Total Cost
+                      </span>
+                      <span className="font-bold text-amber-400">
+                        Rs. {room.price}
+                      </span>
+                    </div>
+                  </div>
+
+                  <button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-xl">
+                    Book Your Stay
+                  </button>
+
+                  <p className="text-xs text-gray-300 text-center mt-4">
+                    Free cancellation up to 24 hours before check-in
+                  </p>
                 </div>
-
-                <button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-xl">
-                  Book Your Stay
-                </button>
-
-                <p className="text-xs text-gray-400 text-center mt-4">
-                  Free cancellation up to 24 hours before check-in
-                </p>
               </div>
             </div>
           </div>

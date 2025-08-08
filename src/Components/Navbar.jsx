@@ -154,8 +154,8 @@ export default function Navbar() {
           onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
           className={`flex items-center space-x-2 px-3 py-2 text-sm font-medium transition-colors duration-200 rounded-lg hover:bg-orange-50 ${
             isScrolled
-              ? "text-blue-700 hover:text-orange-500"
-              : "text-white hover:text-orange-500"
+              ? "text-blue-700 hover:text-blue-500"
+              : "text-blue-700 hover:text-blue-500"
           }`}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -184,8 +184,8 @@ export default function Navbar() {
                   key={lang.code}
                   className={`w-full text-left px-4 py-2 text-sm transition-colors duration-200 ${
                     selectedLanguage === lang.code
-                      ? "bg-orange-500 text-white"
-                      : "text-gray-700 hover:bg-orange-50 hover:text-orange-500"
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-700 hover:bg-blue-50 hover:text-blue-500"
                   }`}
                   whileHover={{ x: 2 }}
                   onClick={() => {
@@ -258,12 +258,12 @@ export default function Navbar() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <a
-                  href="#"
+                <Link
+                  to="/book-now"
                   className="bg-orange-500 text-white px-4 lg:px-6 py-2 lg:py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 text-sm lg:text-base hover:bg-orange-600"
                 >
                   Book Now
-                </a>
+                </Link>
               </motion.div>
 
               {/* Mobile Hamburger Menu */}

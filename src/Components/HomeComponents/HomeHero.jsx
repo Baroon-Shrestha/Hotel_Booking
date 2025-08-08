@@ -28,8 +28,6 @@ export default function HomeHero() {
           className="absolute inset-0 bg-cover bg-center scale-110"
           style={{
             backgroundImage: `url(${heroImage})`,
-            x: mousePosition.x * 0.5,
-            y: mousePosition.y * 0.5,
           }}
           transition={{ type: "spring", stiffness: 100, damping: 15 }}
         />
@@ -47,11 +45,9 @@ export default function HomeHero() {
           Your browser does not support the video tag.
         </video>
         */}
-
         {/* Enhanced Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-transparent z-10" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent z-10" />
-
         {/* Floating Elements */}
         <motion.div
           className="absolute top-20 left-20 w-2 h-2 bg-white/30 rounded-full"
@@ -78,7 +74,6 @@ export default function HomeHero() {
             delay: 1,
           }}
         />
-
         {/* Social Media Icons - Right Side Enhanced */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
@@ -136,7 +131,6 @@ export default function HomeHero() {
             </motion.a>
           </div>
         </motion.div>
-
         {/* Bottom Content - Enhanced Text and CTA */}
         <div className="absolute bottom-0 left-0 right-0 z-20 px-6 md:px-12 lg:px-20 pb-16 md:pb-20">
           <div className="max-w-7xl mx-auto">
@@ -291,8 +285,7 @@ export default function HomeHero() {
             </motion.div>
           </div>
         </div>
-
-        <style jsx>{`
+        <style>{`
           .writing-mode-vertical {
             writing-mode: vertical-rl;
             text-orientation: mixed;
